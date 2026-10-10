@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cuentas del bar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EBF0ED;--card:#FBFCFB;--ink:#12302A;--mute:#5E7770;--line:#CFDAD5;--acc:#9A6B0F;--accbg:#F1E4C4;--bad:#A8322D;--bar:#12302A;--bart:#F3F7F4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1F1B;--card:#12302A;--ink:#EAF1ED;--mute:#93AAA3;--line:#24473F;--acc:#E4B955;--accbg:#3A3115;--bad:#F08A82;--bar:#E4B955;--bart:#1B1604}}
+:root[data-theme="dark"]{--bg:#0B1F1B;--card:#12302A;--ink:#EAF1ED;--mute:#93AAA3;--line:#24473F;--acc:#E4B955;--accbg:#3A3115;--bad:#F08A82;--bar:#E4B955;--bart:#1B1604}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:16px;line-height:1.4;padding-bottom:150px}
+.w{max-width:640px;margin:0 auto;padding:0 14px}
+header{padding:16px 0 10px}
+h1{font-size:26px;font-weight:800;margin:0 0 10px;letter-spacing:-.02em}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+input,button,textarea{font:inherit;color:inherit}
+input,textarea{background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+input:focus,textarea:focus,button:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+button{cursor:pointer;border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:10px 14px;font-weight:600}
+button.p{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.status{font-size:13px;color:var(--mute);margin-top:8px}
+.status.err{color:var(--bad);font-weight:600}
+.client{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px;margin:12px 0}
+.ch{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.cn{font-size:20px;font-weight:800;overflow-wrap:anywhere}
+.ct{font-size:22px;font-weight:800;color:var(--acc);font-variant-numeric:tabular-nums}
+ul{list-style:none;margin:8px 0;padding:0}
+li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed var(--line)}
+li span.d{flex:1;overflow-wrap:anywhere}
+li span.a{font-variant-numeric:tabular-nums;font-weight:600}
+.x{border:0;background:none;color:var(--mute);padding:4px 8px;font-size:18px;line-height:1}
+.prods{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.pb{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:12px}.pb small{color:var(--acc);font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}.pb:active{background:var(--accbg)}.ch{cursor:pointer}.chev{color:var(--mute);margin-right:8px}
+.foot{display:flex;justify-content:flex-end;margin-top:10px}
+.del{font-size:13px;color:var(--bad);border-color:transparent;background:none;padding:6px 8px}
+.empty{text-align:center;color:var(--mute);padding:40px 10px}
+.fab{position:fixed;right:16px;bottom:calc(88px + env(safe-area-inset-bottom,0px));width:60px;height:60px;border-radius:50%;font-size:34px;line-height:1;padding:0;background:var(--acc);color:var(--card);border:0;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+:root:not([data-theme="dark"]) .fab{color:#fff}
+.tot{position:fixed;left:0;right:0;bottom:0;background:var(--bar);color:var(--bart);padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;align-items:center}
+.tot b{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums}
+.tot button{background:transparent;color:inherit;border-color:currentColor}
+dialog{border:0;border-radius:16px;padding:20px;width:min(92vw,440px);background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+dialog h2{margin:0 0 12px;font-size:21px}
+dialog input,dialog textarea{width:100%}
+textarea{height:150px;font-size:13px}
+.sr{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.sr.g{border:0;font-weight:800;font-size:20px;padding-top:12px}
+.nudge{display:none;background:var(--accbg);border:1.5px solid var(--acc);border-radius:10px;padding:10px 12px;margin-top:10px;align-items:center;justify-content:space-between;gap:10px;font-size:14px}.nudge.on{display:flex}
+</style>
+</head>
+<body>
+<div class="w">
+<header>
+  <h1>Cuentas del bar</h1>
+  <div class="row">
+    <label for="fecha" style="font-weight:600">Fecha</label>
+    <input type="date" id="fecha">
+    <button id="bResumen">Resumen</button>
+    <button id="bResp">Respaldo</button>
+    <button id="bFile">Guardar archivo</button>
+  </div>
+  <div class="status" id="st">Se guarda solo en cada cambio</div>
+  <div class="status" id="fst">Archivo automático cada 5 minutos en Documentos/CuentasBar</div>
+</header>
+<main id="list"></main>
+</div>
+
+<div class="tot"><div>Total del día<br><b id="gt">$0.00</b></div><button id="bResumen2">Ver resumen</button></div>
+
+<dialog id="dFecha">
+  <h2>¿Qué día es la jornada?</h2>
+  <input type="date" id="fecha0">
+  <p class="status" id="info0"></p>
+  <button class="p" id="bOk" style="width:100%">Abrir jornada</button>
+</dialog>
+
+<dialog id="dRes">
+  <h2>Resumen del día</h2>
+  <div id="resBody"></div>
+  <div class="row" style="margin-top:14px;justify-content:flex-end"><button id="cRes">Cerrar</button></div>
+</dialog>
+
+<dialog id="dResp">
+  <h2>Respaldo</h2>
+  <p class="status" style="margin-top:0">Cada cambio ya se guarda dos veces en este dispositivo. Copie este texto y guárdelo (WhatsApp, notas) como copia extra. Para restaurar, péguelo aquí.</p>
+  <textarea id="bk" spellcheck="false"></textarea>
+  <div class="row" style="margin-top:12px;justify-content:space-between">
+    <button id="cpy">Copiar</button><button id="rst">Restaurar desde este texto</button>
+  </div>
+  <p class="status" id="bkMsg"></p>
+  <div class="row" style="justify-content:flex-end"><button id="cResp">Cerrar</button></div>
+</dialog>
+
+<script>
+const K='bar_cuentas_v1',KB='bar_cuentas_v1_bak';
+let S={cur:'',days:{}},dirty=false,dl=null,lastFile=Date.now();
+const $=id=>document.getElementById(id);
+const hoy=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const money=n=>'$'+n.toLocaleString('es',{minimumFractionDigits:2,maximumFractionDigits:2});
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* Editar aquí: clientes fijos y productos con su valor */
+const NOMBRES=['SNEHIDER','Angie','Carlos','Juan'];
+const PRODS=[{n:'Agua',v:0.75},{n:'Empanada pequeña',v:0.50},{n:'Empanada grande',v:1},{n:'Jugo',v:1.25}];
+let openId=null;
+const day=()=>{const d=S.days[S.cur]||(S.days[S.cur]={clients:[]});NOMBRES.forEach(n=>{if(!d.clients.some(c=>c.name===n))d.clients.push({id:uid(),name:n,items:[]})});return d};
+function grupos(c){const m=new Map();c.items.forEach(i=>{const n=i.desc||'Consumo',g=m.get(n)||{n,q:0,t:0};g.q++;g.t=Math.round((g.t+i.amt)*100)/100;m.set(n,g)});return [...m.values()]}
+const ctotal=c=>Math.round(c.items.reduce((a,i)=>a+i.amt,0)*100)/100;
+const dtotal=()=>Math.round(day().clients.reduce((a,c)=>a+ctotal(c),0)*100)/100;
+
+function valid(o){return o&&typeof o==='object'&&o.days&&typeof o.days==='object'}
+function load(){
+  for(const k of [K,KB]){
+    try{const r=localStorage.getItem(k);if(r){const o=JSON.parse(r);if(valid(o)){S=o;S.cur=S.cur||'';return k===KB}}}catch(e){}
+  }
+  return false;
+}
+function status(t,err){const e=$('st');e.textContent=t;e.className='status'+(err?' err':'')}
+function save(){
+  try{
+    const old=localStorage.getItem(K);
+    if(old)localStorage.setItem(KB,old);
+    localStorage.setItem(K,JSON.stringify(S));dirty=true;
+    status('Guardado '+new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'}));
+  }catch(e){status('No se pudo guardar en este dispositivo. Use Respaldo para copiar sus datos.',true)}
+}
+
+function render(focusId){
+  const L=$('list'),cl=day().clients;
+  if(!cl.length){L.innerHTML='<div class="empty">Aún no hay clientes en esta fecha.<br>Toque + para agregar el primero.</div>'}
+  else L.innerHTML=cl.map(c=>`
+  <section class="client" data-id="${c.id}">
+    <div class="ch" data-act="tog"><div class="cn"><span class="chev">${c.id===openId?'▾':'▸'}</span>${esc(c.name)}</div><div class="ct">${money(ctotal(c))}</div></div>
+    ${c.id===openId?`<div class="prods">${PRODS.map((p,k)=>`<button class="pb" data-act="prod" data-k="${k}">${esc(p.n)}<small>${money(p.v)}</small></button>`).join('')}</div>
+    <ul>${grupos(c).map(g=>`<li><span class="d">${g.q} × ${esc(g.n)}</span><span class="a">${money(g.t)}</span><button class="x" data-act="rm" data-n="${esc(g.n)}" aria-label="Quitar uno">−</button></li>`).join('')}</ul>
+    ${c.items.length?'<div class="foot"><button class="del" data-act="clr">Vaciar cuenta</button></div>':''}`:''}
+  </section>`).join('');
+  $('gt').textContent=money(dtotal());
+  if(focusId){const a=L.querySelector(`[data-id="${focusId}"] [data-f="amt"]`);if(a)a.focus()}
+}
+
+$('list').addEventListener('click',e=>{
+  const sec=e.target.closest('.client');if(!sec)return;
+  const c=day().clients.find(x=>x.id===sec.dataset.id);if(!c)return;
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act;
+  if(a==='tog'){openId=openId===c.id?null:c.id;render()}
+  else if(a==='prod'){const p=PRODS[+b.dataset.k];c.items.push({id:uid(),desc:p.n,amt:p.v});save();render()}
+  else if(a==='rm'){const k=c.items.map(i=>i.desc||'Consumo').lastIndexOf(b.dataset.n);if(k>-1)c.items.splice(k,1);save();render()}
+  else if(a==='clr'){
+    if(b.dataset.arm){c.items=[];save();render()}
+    else{b.dataset.arm='1';b.textContent='¿Seguro? Toque otra vez';setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;b.textContent='Vaciar cuenta'}},3000)}
+  }
+});
+
+function setDay(d){
+  if(!d)return;S.cur=d;$('fecha').value=d;day();save();render();
+}
+$('fecha').addEventListener('change',e=>setDay(e.target.value));
+
+function resumen(){
+  const cl=day().clients;
+  $('resBody').innerHTML=(cl.length?cl.map(c=>`<div class="sr"><span>${esc(c.name)}</span><span>${money(ctotal(c))}</span></div>`).join(''):'<p class="status">Sin clientes en esta fecha.</p>')+
+  `<div class="sr g"><span>Total del día</span><span>${money(dtotal())}</span></div><p class="status">Fecha: ${esc(S.cur)}</p>`;
+  $('dRes').showModal();
+}
+$('bResumen').onclick=resumen;$('bResumen2').onclick=resumen;$('cRes').onclick=()=>$('dRes').close();
+
+$('bResp').onclick=()=>{$('bk').value=JSON.stringify(S);$('bkMsg').textContent='';$('dResp').showModal()};
+$('cResp').onclick=()=>$('dResp').close();
+$('cpy').onclick=async()=>{
+  const t=$('bk');t.select();
+  try{await navigator.clipboard.writeText(t.value);$('bkMsg').textContent='Copiado.'}
+  catch(e){try{document.execCommand('copy');$('bkMsg').textContent='Copiado.'}catch(_){$('bkMsg').textContent='Seleccionado: copie con el menú del teléfono.'}}
+};
+$('rst').onclick=()=>{
+  try{
+    const o=JSON.parse($('bk').value);if(!valid(o))throw 0;
+    S=o;S.cur=S.cur||hoy();save();$('fecha').value=S.cur;render();$('dResp').close();
+  }catch(e){$('bkMsg').textContent='El texto no es un respaldo válido.'}
+};
+
+window.addEventListener('pagehide',save);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)save()});
+
+const FS=(window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.Filesystem)||null;
+const isNative=!!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform());
+let perm=false;
+async function archivar(manual){
+  const el=$('fst');
+  if(!isNative||!FS){if(manual){el.textContent='Esta función solo trabaja dentro de la app instalada.';el.className='status err'}return}
+  const path='CuentasBar/CuentasBar_'+(S.cur||hoy())+'.json',data=JSON.stringify(S,null,1);
+  if(!perm){try{await FS.requestPermissions()}catch(e){}perm=true}
+  for(const dir of ['DOCUMENTS','EXTERNAL','DATA']){
+    try{
+      await FS.writeFile({path,data,directory:dir,encoding:'utf8',recursive:true});
+      dirty=false;lastFile=Date.now();
+      const lugar=dir==='DOCUMENTS'?'Documentos/CuentasBar':dir==='EXTERNAL'?'almacenamiento de la app, carpeta CuentasBar':'memoria interna de la app';
+      el.className='status';el.textContent='Archivo guardado '+new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})+' en '+lugar;
+      return;
+    }catch(e){}
+  }
+  el.className='status err';el.textContent='No se pudo guardar el archivo. Revise los permisos de la app.';
+}
+$('bFile').onclick=()=>archivar(true);
+setInterval(()=>{if(dirty)archivar()},300000);
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&dirty)archivar()});
+
+// Inicio
+const fromBak=load();
+$('fecha0').value=hoy();
+const n=Object.keys(S.days).length;
+$('info0').textContent=fromBak?'Se recuperó la copia de seguridad de su último uso.':(n?`Hay ${n} jornada(s) guardada(s). Si elige una fecha ya usada, se abre con sus datos.`:'Puede cambiar la fecha si lo necesita.');
+$('dFecha').addEventListener('cancel',e=>e.preventDefault());
+$('bOk').onclick=()=>{const d=$('fecha0').value||hoy();$('dFecha').close();setDay(d);archivar()};
+$('fecha').value=hoy();render();
+$('dFecha').showModal();
+</script>
+</body>
+</html>
